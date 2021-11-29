@@ -1,0 +1,6 @@
+modules:
+  typesense:
+    method: exec
+    timeout: 5s
+    exec:
+      command: python
