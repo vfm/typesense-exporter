@@ -3,7 +3,7 @@ import json
 import bottle
 import requests
 
-exporter_address = os.environ.get('TS_EXPORTER_LISTEN_ADDRESS', 'localhost')
+exporter_address = os.environ.get('TS_EXPORTER_LISTEN_ADDRESS', '0.0.0.0')
 exporter_port = os.environ.get('TS_EXPORTER_LISTEN_PORT', 9000)
 exporter_prefix = os.environ.get('TS_EXPORTER_METRICS_PREFIX', 'typesense')
 
@@ -18,11 +18,11 @@ typesense_endpoints = {
 }
 
 ## Fetch endpoints and return dict
-def scrapeEndpoints(ep):
+def fetchEndpoints(ep):
   generated = dict()
   for endpoint, config in ep.items():
     h = {'X-TYPESENSE-API-KEY': typesense_apikey}
-    r = requests.get( typesense_scheme + "://" + typesense_host + ":" + typesense_port + "/" + config["url"], headers=h )
+    r = requests.get( typesense_scheme + "://" + typesense_host + ":" + typesense_port + "/" + config["url"], headers=h, timeout=2 )
     generated[endpoint] = json.loads(r.text)
   return generated
 
@@ -59,7 +59,7 @@ def index():
 # Metrics
 @bottle.route('/metrics')
 def metrics():
-  scrapedata = scrapeEndpoints(typesense_endpoints)
+  scrapedata = fetchEndpoints(typesense_endpoints)
   outputlist = generateOutput(scrapedata)
 
   output = str()
