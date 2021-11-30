@@ -3,4 +3,4 @@ modules:
     method: exec
     timeout: 5s
     exec:
-      command: /opt/venv/bin/python /opt/typesense-exporter.py
+      command: /usr/bin/python3 /opt/typesense-exporter.py
