@@ -1,6 +1,0 @@
-modules:
-  typesense:
-    method: exec
-    timeout: 5s
-    exec:
-      command: /usr/bin/python3 /opt/typesense-exporter.py

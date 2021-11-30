@@ -1,8 +1,14 @@
-FROM qubitproducts/exporter_exporter:0.4.5
-
-RUN apk update \
- && apk add python3 py-pip
+FROM python:3-slim
 
 WORKDIR /opt
-COPY . .
-RUN pip install -r requirements.txt
+RUN groupadd exporter --gid 1000 \
+ && useradd exporter --uid 1000 --gid exporter
+
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt
+
+COPY --chown=exporter typesense-exporter.py .
+
+USER exporter
+EXPOSE 9000
+ENTRYPOINT ["/usr/local/bin/python", "typesense-exporter.py"]
